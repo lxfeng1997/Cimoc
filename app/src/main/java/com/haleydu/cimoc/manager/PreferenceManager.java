@@ -30,9 +30,6 @@ public class PreferenceManager {
 
     public static final String PREF_APP_VERSION = "pref_app_version";
 
-    public static final String PREF_MAIN_NOTICE = "pref_main_notice";
-    public static final String PREF_MAIN_NOTICE_LAST = "pref_main_notice_last";
-
     public static final String PREF_READER_MODE = "pref_reader_mode";
     public static final String PREF_READER_KEEP_BRIGHT = "pref_reader_keep_on";
     public static final String PREF_READER_HIDE_INFO = "pref_reader_hide";
@@ -107,16 +104,9 @@ public class PreferenceManager {
 
     public static final String PREF_NIGHT = "pref_night";
 
-    public static final String PREF_UPDATE_APP_AUTO = "pref_update_app_auto";
-
-    public static final String PREF_UPDATE_CURRENT_URL = "pref_update_current_url";
-
     public static final String PREF_OTHER_CHECK_UPDATE = "pref_other_check_update";
-    public static final String PREF_OTHER_CHECK_SOFTWARE_UPDATE = "pref_other_check_software_update";
     public static final String PREF_OTHER_CONNECT_ONLY_WIFI = "pref_other_connect_only_wifi";
     public static final String PREF_OTHER_LOADCOVER_ONLY_WIFI = "pref_other_loadcover_only_wifi";
-    public static final String PREF_OTHER_FIREBASE_EVENT = "pref_other_firebase_event";
-    public static final String PREF_OTHER_REDUCE_AD = "pref_other_reduce_ad";
     public static final String PREF_OTHER_CHECK_UPDATE_LAST = "pref_other_check_update_last";
     public static final String PREF_OTHER_STORAGE = "pref_other_storage";
     public static final String PREF_OTHER_THEME = "pref_other_theme";

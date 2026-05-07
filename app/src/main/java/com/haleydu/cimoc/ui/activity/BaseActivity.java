@@ -39,7 +39,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initAdMob();
         mPreference = App.getPreferenceManager();
         initTheme();
         setContentView(getLayoutRes());
@@ -120,9 +119,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     protected void initUser() {
-    }
-
-    protected void initAdMob() {
     }
 
     protected abstract int getLayoutRes();

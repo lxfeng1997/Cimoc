@@ -10,7 +10,6 @@ import android.os.Bundle;
 import androidx.multidex.MultiDex;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -44,8 +43,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.OkHttpClient;
-import xcrash.XCrash;
-
 import androidx.multidex.MultiDexApplication;
 
 /**
@@ -74,14 +71,9 @@ public class App extends MultiDexApplication implements AppGetter, Thread.Uncaug
     private static App mApp;
     private static Activity sActivity;
 
-    // 默认Github源
-    private static String UPDATE_CURRENT_URL = "https://api.github.com/repos/Haleydu/Cimoc/releases/latest";
-    private static final String CRASH_FILE_PATH = "/Cimoc/Log/crash";
-
     @Override
     public void onCreate() {
         super.onCreate();
-        //initXCrash();
         Thread.setDefaultUncaughtExceptionHandler(this);
         mActivityLifecycle = new ActivityLifecycle();
         registerActivityLifecycleCallbacks(mActivityLifecycle);
@@ -230,14 +222,6 @@ public class App extends MultiDexApplication implements AppGetter, Thread.Uncaug
         MultiDex.install(this);
     }
 
-    public static void setUpdateCurrentUrl(String updateCurrentUrl) {
-        UPDATE_CURRENT_URL = updateCurrentUrl;
-    }
-
-    public static String getUpdateCurrentUrl() {
-        return UPDATE_CURRENT_URL;
-    }
-
     public static OkHttpClient getHttpClient() {
 
         //OkHttpClient返回null实现"仅WiFi联网"，后面要注意空指针处理
@@ -298,15 +282,4 @@ public class App extends MultiDexApplication implements AppGetter, Thread.Uncaug
         return ssfFactory;
     }
 
-    private void initXCrash(){
-        //异常捕捉框架,xcrash的native捕捉会导致系统死机，将之去掉不使用20200817
-        XCrash.InitParameters initParameters = new XCrash.InitParameters();
-        //不处理native层的崩溃异常
-        initParameters.setLogDir(Environment.getExternalStorageDirectory().getAbsolutePath()+CRASH_FILE_PATH);
-        initParameters.disableNativeCrashHandler();
-        //java崩溃异常文件的最大数量
-        initParameters.setJavaLogCountMax(200);
-        initParameters.setJavaDumpAllThreadsCountMax(25);
-        XCrash.init(this, initParameters);
-    }
 }

@@ -49,7 +49,6 @@ Online manga reader based on Android
 - [PhotoDraweeView](https://github.com/ongakuer/PhotoDraweeView)
 - [Rhino](https://github.com/mozilla/rhino)
 - [BlazingChain](https://github.com/tommyettinger/BlazingChain)
-- [AppUpdater](https://gitee.com/jenly1314/AppUpdater)
 
 
 # 应用截图

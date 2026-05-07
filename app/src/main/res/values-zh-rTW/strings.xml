@@ -9,7 +9,6 @@
     <string name="drawer_light">日間模式</string>
     <string name="drawer_night">夜間模式</string>
     <string name="drawer_backup">備份</string>
-    <string name="drawer_update">非最新版本請點擊更新</string>
 
     <string name="main_double_click">再按一次退出</string>
     <string name="main_last_read_fail">讀取最後閱讀失敗</string>
@@ -179,8 +178,6 @@
     <string name="settings_other_loadcover_only_wifi_summary">非 WIFI 环境下使用缓存加载封面</string>
     <string name="settings_other_check_update">自動檢查漫畫更新</string>
     <string name="settings_other_check_update_summary">WIFI 下自動檢查漫畫更新</string>
-    <string name="settings_check_update">檢查軟件更新</string>
-    <string name="settings_check_update_summary">關閉後不提示更新</string>
     <string name="settings_other_launch">預設啟動頁</string>
     <string name="settings_other_theme">主題顏色</string>
     <string name="settings_other_night_alpha">夜間模式亮度</string>
@@ -190,11 +187,6 @@
     <string name="settings_other_storage_edit_neutral">選擇路徑</string>
     <string name="settings_other_clear_cache">清理緩存</string>
     <string name="settings_other_clear_cache_summary">清理線上漫畫的緩存資料</string>
-    <string name="settings_other_firebase_event">Firebase數據收集</string>
-    <string name="settings_other_firebase_event_summary">允許程序通過Firebase收集您的使用情況，以便於分析程序和漫畫源的工作狀態。</string>
-    <string name="settings_other_reduce_ad">減少頁面廣告</string>
-    <string name="settings_other_reduce_ad_summary">減少歷史和收藏的廣告，下載和本地頁不顯示廣告</string>
-
     <string name="backup_save">備份</string>
     <string name="backup_save_comic_auto">自動備份</string>
     <string name="backup_save_comic_auto_summary">自動備份收藏和歷史漫畫</string>
@@ -236,10 +228,6 @@
     <string name="about_support">意見回饋</string>
     <string name="about_update">檢查更新</string>
     <string name="about_update_summary">點擊前往 Github Releases 頁面</string>
-    <string name="about_update_latest">當前已經是最新版本</string>
-    <string name="about_update_download">點擊下載最新版本</string>
-    <string name="about_update_doing">正在檢查更新</string>
-    <string name="about_update_fail">檢查更新失敗</string>
     <string name="about_resource_fail">打開網頁失敗</string>
 
     <string name="dialog_choice">單項選擇</string>

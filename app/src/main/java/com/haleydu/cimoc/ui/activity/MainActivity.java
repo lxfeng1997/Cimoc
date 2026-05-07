@@ -1,7 +1,7 @@
 package com.haleydu.cimoc.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -13,34 +13,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.os.Environment;
 import android.provider.Settings;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.haleydu.cimoc.App;
 import com.haleydu.cimoc.R;
 import com.haleydu.cimoc.component.ThemeResponsive;
-import com.haleydu.cimoc.core.Update;
 import com.haleydu.cimoc.fresco.ControllerBuilderProvider;
 import com.haleydu.cimoc.global.Extra;
 import com.haleydu.cimoc.manager.PreferenceManager;
@@ -55,7 +49,6 @@ import com.haleydu.cimoc.ui.view.MainView;
 import com.haleydu.cimoc.utils.HintUtils;
 import com.haleydu.cimoc.utils.PermissionUtils;
 
-import com.king.app.updater.constant.Constants;
 import butterknife.BindView;
 
 
@@ -66,7 +59,6 @@ import butterknife.BindView;
  */
 public class MainActivity extends BaseActivity implements MainView, NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int DIALOG_REQUEST_NOTICE = 0;
     private static final int DIALOG_REQUEST_PERMISSION = 1;
     //private static final int DIALOG_REQUEST_LOGOUT = 2;
 
@@ -97,9 +89,6 @@ public class MainActivity extends BaseActivity implements MainView, NavigationVi
     private BaseFragment mCurrentFragment;
     private boolean night;
 
-    private Update update = new Update();
-    private String versionName,content,mUrl,md5;
-    private int versionCode;
     //auth0
 //    private Auth0 auth0;
 
@@ -186,19 +175,9 @@ public class MainActivity extends BaseActivity implements MainView, NavigationVi
     protected void initData() {
         mPresenter.loadLast();
 
-        //检查App更新
-        String updateUrl;
-        if (mPreference.getBoolean(PreferenceManager.PREF_UPDATE_APP_AUTO, true)) {
-            if ((updateUrl = App.getPreferenceManager().getString(PreferenceManager.PREF_UPDATE_CURRENT_URL)) != null) {
-                App.setUpdateCurrentUrl(updateUrl);
-            }
-            checkUpdate();
-        }
         mPresenter.getSourceBaseUrl();
 
-        showAuthorNotice();
         showPermission();
-        getMh50KeyIv();
 
     }
 
@@ -370,9 +349,6 @@ public class MainActivity extends BaseActivity implements MainView, NavigationVi
                         showSnackbar(R.string.about_resource_fail);
                     }
                     break;
-                case R.id.drawer_comicUpdate:
-                    update.startUpdate(versionName, content, mUrl, versionCode, md5);
-                    break;
                 case R.id.drawer_night:
                     onNightSwitch();
                     mPreference.putBoolean(PreferenceManager.PREF_NIGHT, night);
@@ -416,13 +392,9 @@ public class MainActivity extends BaseActivity implements MainView, NavigationVi
     @Override
     public void onDialogResult(int requestCode, Bundle bundle) {
         switch (requestCode) {
-            case DIALOG_REQUEST_NOTICE:
-                mPreference.putBoolean(PreferenceManager.PREF_MAIN_NOTICE, true);
-                //showPermission();
-                break;
             case DIALOG_REQUEST_PERMISSION:
-                //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-                com.king.app.updater.util.PermissionUtils.verifyReadAndWritePermissions(this, Constants.RE_CODE_STORAGE_PERMISSION);
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                     startActivity(intent);
@@ -457,30 +429,6 @@ public class MainActivity extends BaseActivity implements MainView, NavigationVi
         mNavigationView.getMenu().findItem(R.id.drawer_night).setTitle(night ? R.string.drawer_light : R.string.drawer_night);
         if (mNightMask != null) {
             mNightMask.setVisibility(night ? View.VISIBLE : View.INVISIBLE);
-        }
-    }
-
-    @Override
-    public void onUpdateReady() {
-        HintUtils.showToast(this, R.string.main_ready_update);
-        if (mPreference.getBoolean(PreferenceManager.PREF_OTHER_CHECK_SOFTWARE_UPDATE, true)){
-            mNavigationView.getMenu().findItem(R.id.drawer_comicUpdate).setVisible(true);
-        }
-//        Update.update(this);
-    }
-
-    @Override
-    public void onUpdateReady(String versionName, String content, String mUrl, int versionCode, String md5) {
-        this.versionName = versionName;
-        this.content = content;
-        this.mUrl = mUrl;
-        this.md5 = md5;
-        this.versionCode = versionCode;
-        if (mPreference.getBoolean(PreferenceManager.PREF_OTHER_CHECK_SOFTWARE_UPDATE, true)) {
-            mNavigationView.getMenu().findItem(R.id.drawer_comicUpdate).setVisible(true);
-            update.startUpdate(versionName, content, mUrl, versionCode, md5);
-        }else {
-            HintUtils.showToast(this, R.string.main_ready_update);
         }
     }
 
@@ -531,84 +479,11 @@ public class MainActivity extends BaseActivity implements MainView, NavigationVi
         }
     }
 
-    private void showAuthorNotice() {
-        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config);
-        mFirebaseRemoteConfig.fetchAndActivate()
-                .addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                        if (task.isSuccessful()) {
-                            boolean updated = task.getResult();
-                            Log.d("FireBase_FirstOpenMsg", "Config params updated: " + updated);
-                        } else {
-                            Log.d("FireBase_FirstOpenMsg", "Config params updated Failed. ");
-                        }
-
-                        String showMsg = mFirebaseRemoteConfig.getString("first_open_msg");
-                        if (!mPreference.getBoolean(PreferenceManager.PREF_MAIN_NOTICE, false)
-                                || showMsg.compareTo(mPreference.getString(PreferenceManager.PREF_MAIN_NOTICE_LAST, "")) != 0) {
-                            mPreference.putString(PreferenceManager.PREF_MAIN_NOTICE_LAST, showMsg);
-                            MessageDialogFragment fragment = MessageDialogFragment.newInstance(R.string.main_notice,
-                                    showMsg, false, DIALOG_REQUEST_NOTICE);
-                            fragment.show(getSupportFragmentManager(), null);
-                        }
-                    }
-                });
-    }
-
-    private void getMh50KeyIv() {
-        FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(60*60)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config);
-        mFirebaseRemoteConfig.fetchAndActivate()
-                .addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                        if (task.isSuccessful()) {
-                            boolean updated = task.getResult();
-                            Log.d("FireBase_FirstOpenMsg", "Config params updated: " + updated);
-                        } else {
-                            Log.d("FireBase_FirstOpenMsg", "Config params updated Failed. ");
-                        }
-
-                        String mh50_key = mFirebaseRemoteConfig.getString("mh50_key_msg");
-                        String mh50_iv = mFirebaseRemoteConfig.getString("mh50_iv_msg");
-
-                        if (!mh50_key.equals(mPreference.getString(PreferenceManager.PREFERENCES_MH50_KEY_MSG, "KA58ZAQ321oobbG8"))){
-                            mPreference.putString(PreferenceManager.PREFERENCES_MH50_KEY_MSG, mh50_key);
-                            Toast.makeText(MainActivity.this,"漫画堆key已更新",Toast.LENGTH_LONG).show();
-                        }
-                        if (!mh50_iv.equals(mPreference.getString(PreferenceManager.PREFERENCES_MH50_IV_MSG, "A1B2C3DEF1G321o8"))){
-                            mPreference.putString(PreferenceManager.PREFERENCES_MH50_IV_MSG, mh50_iv);
-                            Toast.makeText(MainActivity.this,"漫画堆iv已更新",Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-    }
-
     private void showPermission() {
         if (!PermissionUtils.hasAllPermissions(this)) {
             MessageDialogFragment fragment = MessageDialogFragment.newInstance(R.string.main_permission,
                     R.string.main_permission_content, false, DIALOG_REQUEST_PERMISSION);
             fragment.show(getSupportFragmentManager(), null);
-        }
-    }
-
-    private void checkUpdate() {
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
-            mPresenter.checkGiteeUpdate(info.versionCode);
-            //mPresenter.checkUpdate(info.versionName);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
