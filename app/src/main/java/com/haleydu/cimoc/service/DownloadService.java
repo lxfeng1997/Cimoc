@@ -29,7 +29,6 @@ import com.haleydu.cimoc.rx.RxBus;
 import com.haleydu.cimoc.rx.RxEvent;
 import com.haleydu.cimoc.saf.DocumentFile;
 import com.haleydu.cimoc.utils.DocumentUtils;
-import com.haleydu.cimoc.utils.JMTTUtil;
 import com.haleydu.cimoc.utils.StringUtils;
 
 import java.io.IOException;
@@ -43,11 +42,9 @@ import java.util.concurrent.Future;
 
 import okhttp3.CacheControl;
 import okhttp3.Headers;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Created by Hiroshi on 2016/9/1.
@@ -230,27 +227,7 @@ public class DownloadService extends Service implements AppGetter {
             if (request != null) {
                 Response response = null;
                 try {
-                    if (mTask.getSource() == 72){
-                        OkHttpClient mJMTTHttpClient = new OkHttpClient().newBuilder()
-                                .followRedirects(true)
-                                .followSslRedirects(true)
-                                .retryOnConnectionFailure(true)
-                                .addInterceptor(chain -> {
-                                    String url1 = chain.request().url().toString();
-                                    Response response1 = chain.proceed(chain.request());
-                                    if (!url1.toLowerCase().contains("media/photos")) return response1;
-                                    int cha = Integer.parseInt(url1.substring(url1.indexOf("photos/") + 7, url1.lastIndexOf("/")));
-                                    if ( cha < 220980) return response1;
-                                    byte[] res = new JMTTUtil().decodeImage(response1.body().byteStream());
-                                    MediaType mediaType = MediaType.parse("image/avif,image/webp,image/apng,image/*,*/*");
-                                    ResponseBody outputBytes = ResponseBody.create(mediaType, res);
-                                    return response1.newBuilder().body(outputBytes).build();
-                                })
-                                .build();
-                        response = mJMTTHttpClient.newCall(request).execute();
-                    }else {
-                        response = mHttpClient.newCall(request).execute();
-                    }
+                    response = mHttpClient.newCall(request).execute();
                     if (response.isSuccessful()) {
                         String displayName = buildFileName(num, url);
                         displayName = displayName.replaceAll("[:/(\\\\)(\\?)<>\"(\\|)(\\.)]", "_")+".jpg";

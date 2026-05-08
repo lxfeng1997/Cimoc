@@ -13,10 +13,16 @@ if(System.getenv("TRAVIS_BUILD_NUMBER") != null){
     version = cmdGetTagname.execute().text.trim()
 }
 else {
-    buildVersion = cmdGetCommitNums.execute().text.trim().toInteger()
+    def commitNums = cmdGetCommitNums.execute().text.trim()
+    if (commitNums.length() > 0) {
+        buildVersion = commitNums.toInteger()
+    }
     cmdGetTagname = 'git describe --abbrev=0'
 
-    version = cmdGetTagname.execute().text.trim()
+    def tagName = cmdGetTagname.execute().text.trim()
+    if (tagName.length() > 0) {
+        version = tagName
+    }
 }
 
 android {
@@ -40,16 +46,16 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("../hellovr10.jks")
-            storePassword '123456'
-            keyAlias 'vr'
-            keyPassword '123456'
+            storeFile file("xfeng-release.jks")
+            storePassword 'CimocXfeng2026'
+            keyAlias 'xfeng'
+            keyPassword 'CimocXfeng2026'
         }
         debug {
-            storeFile file("../hellovr10.jks")
-            storePassword '123456'
-            keyAlias 'vr'
-            keyPassword '123456'
+            storeFile file("xfeng-release.jks")
+            storePassword 'CimocXfeng2026'
+            keyAlias 'xfeng'
+            keyPassword 'CimocXfeng2026'
         }
     }
     buildTypes {
@@ -97,7 +103,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.12.3'
     implementation 'com.facebook.fresco:fresco:2.3.0'
     implementation 'org.jsoup:jsoup:1.13.1'
-    implementation 'org.adw.library:discrete-seekbar:1.0.1'
     implementation 'io.reactivex:rxjava:1.3.8'
     implementation 'io.reactivex:rxandroid:1.2.1'
     api 'com.google.guava:guava:27.0.1-android'

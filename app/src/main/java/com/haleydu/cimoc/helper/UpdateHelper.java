@@ -6,6 +6,7 @@ import com.haleydu.cimoc.model.Comic;
 import com.haleydu.cimoc.model.ComicDao;
 import com.haleydu.cimoc.model.DaoSession;
 import com.haleydu.cimoc.model.Source;
+import com.haleydu.cimoc.model.SourceDao;
 import com.haleydu.cimoc.source.*;
 import com.haleydu.cimoc.source.WebtoonDongManManHua;
 
@@ -22,6 +23,7 @@ public class UpdateHelper {
     private static final int VERSION = BuildConfig.VERSION_CODE;
 
     public static void update(PreferenceManager manager, final DaoSession session) {
+        deleteAdultSources(session);
         int version = manager.getInt(PreferenceManager.PREF_APP_VERSION, 0);
         if (version != VERSION) {
             initSource(session);
@@ -75,7 +77,6 @@ public class UpdateHelper {
         list.add(MiGu.getDefaultSource());
         list.add(Tencent.getDefaultSource());
         list.add(BuKa.getDefaultSource());
-        list.add(EHentai.getDefaultSource());
         list.add(QiManWu.getDefaultSource());
         list.add(Hhxxee.getDefaultSource());
         list.add(ChuiXue.getDefaultSource());
@@ -91,7 +92,6 @@ public class UpdateHelper {
         list.add(MHLove.getDefaultSource());
         list.add(GuFeng.getDefaultSource());
         list.add(YYLS.getDefaultSource());
-        list.add(JMTT.getDefaultSource());
         list.add(Ohmanhua.getDefaultSource());
         list.add(CopyMH.getDefaultSource());
         list.add(HotManga.getDefaultSource());
@@ -101,5 +101,20 @@ public class UpdateHelper {
         list.add(YKMH.getDefaultSource());
         list.add(DmzjFix.getDefaultSource());
         session.getSourceDao().insertOrReplaceInTx(list);
+    }
+
+    private static void deleteAdultSources(final DaoSession session) {
+        session.runInTx(new Runnable() {
+            @Override
+            public void run() {
+                SourceDao dao = session.getSourceDao();
+                List<Source> list = dao.queryBuilder()
+                        .where(SourceDao.Properties.Type.in(60, 72))
+                        .list();
+                if (!list.isEmpty()) {
+                    dao.deleteInTx(list);
+                }
+            }
+        });
     }
 }

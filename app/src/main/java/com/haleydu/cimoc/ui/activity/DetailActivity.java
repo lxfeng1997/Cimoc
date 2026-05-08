@@ -17,6 +17,7 @@ import com.haleydu.cimoc.R;
 import com.haleydu.cimoc.fresco.ControllerBuilderSupplierFactory;
 import com.haleydu.cimoc.fresco.ImagePipelineFactoryBuilder;
 import com.haleydu.cimoc.global.Extra;
+import com.haleydu.cimoc.manager.PreferenceManager;
 import com.haleydu.cimoc.manager.SourceManager;
 import com.haleydu.cimoc.model.Chapter;
 import com.haleydu.cimoc.model.Comic;

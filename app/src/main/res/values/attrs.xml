@@ -11,4 +11,14 @@
         <attr name="min" format="integer" />
         <attr name="max" format="integer" />
     </declare-styleable>
+    <declare-styleable name="DiscreteSeekBar">
+        <attr name="dsb_indicatorColor" format="color|reference" />
+        <attr name="dsb_indicatorPopupEnabled" format="boolean" />
+        <attr name="dsb_min" format="integer" />
+        <attr name="dsb_progressColor" format="color|reference" />
+        <attr name="dsb_rippleColor" format="color|reference" />
+        <attr name="dsb_thumbSize" format="dimension" />
+        <attr name="dsb_trackColor" format="color|reference" />
+        <attr name="dsb_trackHeight" format="dimension" />
+    </declare-styleable>
 </resources>
