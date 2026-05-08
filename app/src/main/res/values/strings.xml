@@ -173,6 +173,10 @@
     <string name="settings_search">搜索设置</string>
     <string name="settings_search_auto_complete">开启搜索提示</string>
     <string name="settings_search_auto_complete_summary">根据输入的关键字弹出提示</string>
+    <string name="settings_source_config_url">图源配置地址</string>
+    <string name="settings_source_config_url_summary">用于更新图源域名配置</string>
+    <string name="settings_source_config_list">图源配置列表</string>
+    <string name="settings_source_config_list_summary">查看当前配置内所有图源地址</string>
     <string name="settings_other">应用设置</string>
     <string name="settings_reader_show_topbar">显示通知栏</string>
     <string name="settings_reader_show_topbar_summary">阅读界面显示通知栏</string>

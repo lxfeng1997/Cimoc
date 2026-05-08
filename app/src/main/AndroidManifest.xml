@@ -54,6 +54,9 @@
             android:name=".ui.activity.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity
+            android:name=".ui.activity.SourceConfigActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
             android:name=".ui.activity.settings.ReaderConfigActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity

@@ -18,10 +18,13 @@ import com.haleydu.cimoc.presenter.BasePresenter;
 import com.haleydu.cimoc.presenter.SettingsPresenter;
 import com.haleydu.cimoc.saf.DocumentFile;
 import com.haleydu.cimoc.service.DownloadService;
+import com.haleydu.cimoc.source.SourceConfig;
+import com.haleydu.cimoc.ui.fragment.dialog.EditorDialogFragment;
 import com.haleydu.cimoc.ui.activity.settings.ReaderConfigActivity;
 import com.haleydu.cimoc.ui.fragment.dialog.MessageDialogFragment;
 import com.haleydu.cimoc.ui.fragment.dialog.StorageEditorDialogFragment;
 import com.haleydu.cimoc.ui.view.SettingsView;
+import com.haleydu.cimoc.ui.widget.Option;
 import com.haleydu.cimoc.ui.widget.preference.CheckBoxPreference;
 import com.haleydu.cimoc.ui.widget.preference.ChoicePreference;
 import com.haleydu.cimoc.ui.widget.preference.SliderPreference;
@@ -51,6 +54,7 @@ public class SettingsActivity extends BackActivity implements SettingsView {
     private static final int DIALOG_REQUEST_OTHER_NIGHT_ALPHA = 7;
     private static final int DIALOG_REQUEST_READER_SCALE_FACTOR = 8;
     private static final int DIALOG_REQUEST_READER_CONTROLLER_TRIG_THRESHOLD = 9;
+    private static final int DIALOG_REQUEST_SOURCE_CONFIG_URL = 10;
 
     @BindViews({R.id.settings_reader_title, R.id.settings_download_title, R.id.settings_other_title, R.id.settings_search_title})
     List<TextView> mTitleList;
@@ -100,6 +104,8 @@ public class SettingsActivity extends BackActivity implements SettingsView {
     CheckBoxPreference mConnectOnlyWifi;
     @BindView(R.id.settings_other_loadcover_only_wifi)
     CheckBoxPreference mLoadCoverOnlyWifi;
+    @BindView(R.id.settings_source_config_url)
+    Option mSourceConfigUrl;
 
     private SettingsPresenter mPresenter;
 
@@ -149,6 +155,7 @@ public class SettingsActivity extends BackActivity implements SettingsView {
                 R.string.settings_other_night_alpha, DIALOG_REQUEST_OTHER_NIGHT_ALPHA);
         mDownloadThread.bindPreference(getSupportFragmentManager(), PreferenceManager.PREF_DOWNLOAD_THREAD, 2,
                 R.string.settings_download_thread, DIALOG_REQUEST_DOWNLOAD_THREAD);
+        mSourceConfigUrl.setSummary(SourceConfig.getSourceUrl());
     }
 
     @OnClick(R.id.settings_reader_config)
@@ -238,6 +245,12 @@ public class SettingsActivity extends BackActivity implements SettingsView {
                 mResultIntent.putExtra(Extra.EXTRA_RESULT, mResultArray);
                 setResult(Activity.RESULT_OK, mResultIntent);
                 break;
+            case DIALOG_REQUEST_SOURCE_CONFIG_URL:
+                String url = bundle.getString(EXTRA_DIALOG_RESULT_VALUE);
+                SourceConfig.setSourceUrl(url);
+                mSourceConfigUrl.setSummary(SourceConfig.getSourceUrl());
+                showSnackbar(R.string.common_execute_success);
+                break;
         }
     }
 
@@ -287,6 +300,19 @@ public class SettingsActivity extends BackActivity implements SettingsView {
                     R.string.settings_download_scan_confirm, true, DIALOG_REQUEST_DOWNLOAD_SCAN);
             fragment.show(getSupportFragmentManager(), null);
         }
+    }
+
+    @OnClick(R.id.settings_source_config_url)
+    void onSourceConfigUrlClick() {
+        EditorDialogFragment fragment = EditorDialogFragment.newInstance(R.string.settings_source_config_url,
+                SourceConfig.getSourceUrl(), DIALOG_REQUEST_SOURCE_CONFIG_URL);
+        fragment.show(getSupportFragmentManager(), null);
+    }
+
+    @OnClick(R.id.settings_source_config_list)
+    void onSourceConfigListClick() {
+        Intent intent = new Intent(this, SourceConfigActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.settings_other_clear_cache)

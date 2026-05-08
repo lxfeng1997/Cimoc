@@ -187,6 +187,20 @@
                     app:summary="@string/settings_search_auto_complete_summary"
                     app:title="@string/settings_search_auto_complete" />
 
+                <com.haleydu.cimoc.ui.widget.Option
+                    android:id="@+id/settings_source_config_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:summary="@string/settings_source_config_url_summary"
+                    app:title="@string/settings_source_config_url" />
+
+                <com.haleydu.cimoc.ui.widget.Option
+                    android:id="@+id/settings_source_config_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:summary="@string/settings_source_config_list_summary"
+                    app:title="@string/settings_source_config_list" />
+
                 <TextView
                     android:id="@+id/settings_other_title"
                     android:layout_width="match_parent"

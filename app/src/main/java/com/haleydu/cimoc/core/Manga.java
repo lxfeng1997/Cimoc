@@ -10,6 +10,7 @@ import com.haleydu.cimoc.parser.Parser;
 import com.haleydu.cimoc.parser.SearchIterator;
 import com.haleydu.cimoc.rx.RxBus;
 import com.haleydu.cimoc.rx.RxEvent;
+import com.haleydu.cimoc.source.SourceConfig;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -181,14 +182,16 @@ public class Manga {
                 return list;
             }
             Request request = parser.getImagesRequest(cid, path);
+            request = SourceConfig.rewriteRequest(request);
             response = App.getHttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
+                String html = SourceConfig.normalizeResponse(response.body().string());
                 List<Chapter> chapter = mChapterManager.getChapter(path, title);
                 if (chapter != null && chapter.size() >= 1) {
-                    list.addAll(parser.parseImages(response.body().string(), chapter.get(0)));
+                    list.addAll(parser.parseImages(html, chapter.get(0)));
                 }
                 if (list.size() == 0) {
-                    list.addAll(parser.parseImages(response.body().string()));
+                    list.addAll(parser.parseImages(html));
                 }
 //                mongo.InsertComicChapter(source, cid, path, list);
             } else {
@@ -210,9 +213,10 @@ public class Manga {
         Response response = null;
         try {
             Request request = parser.getLazyRequest(url);
+            request = SourceConfig.rewriteRequest(request);
             response = App.getHttpClient().newCall(request).execute();
             if (response.isSuccessful()) {
-                return parser.parseLazy(response.body().string(), url);
+                return parser.parseLazy(SourceConfig.normalizeResponse(response.body().string()), url);
             } else {
                 throw new NetworkErrorException();
             }
@@ -317,6 +321,7 @@ public class Manga {
     private static String getResponseBody(OkHttpClient client, Request request, boolean retry) throws NetworkErrorException {
         Response response = null;
         try {
+            request = SourceConfig.rewriteRequest(request);
             response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 byte[] bodybytes = response.body().bytes();
@@ -325,7 +330,7 @@ public class Manga {
                 if (m.find()) {
                     body = new String(bodybytes, m.group(1));
                 }
-                return body;
+                return SourceConfig.normalizeResponse(body);
             } else if (retry)
                 return getResponseBody(client, request, false);
         } catch (Exception e) {

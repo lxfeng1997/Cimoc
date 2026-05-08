@@ -3,6 +3,7 @@ package com.haleydu.cimoc.utils;
 import com.haleydu.cimoc.model.Comic;
 import com.haleydu.cimoc.source.CCMH;
 import com.haleydu.cimoc.source.Cartoonmad;
+import com.haleydu.cimoc.source.JMTT;
 import com.haleydu.cimoc.source.CopyMH;
 import com.haleydu.cimoc.source.DM5;
 import com.haleydu.cimoc.source.GuFeng;
@@ -19,6 +20,7 @@ public class interpretationUtils {
                 type == MiGu.TYPE ||
                 type == CCMH.TYPE ||
                 type == Cartoonmad.TYPE ||
+                //type == JMTT.TYPE ||
                 //type == Manhuatai.TYPE ||
                 //type == Tencent.TYPE ||
                 //type == GuFeng.TYPE ||
@@ -26,3 +28,4 @@ public class interpretationUtils {
                 type == DM5.TYPE;
     }
 }
+

@@ -134,6 +134,8 @@ public class PreferenceManager {
 
     public static final String PREF_HHAAZZ_BASEURL = "pref_hhaazz_baseurl";
     public static final String PREF_HHAAZZ_SW = "pref_hhaazz_sw";
+    public static final String PREF_SOURCE_CONFIG_URL = "pref_source_config_url";
+    public static final String PREF_SOURCE_CONFIG_JSON = "pref_source_config_json";
 
     private SharedPreferences mSharedPreferences;
 

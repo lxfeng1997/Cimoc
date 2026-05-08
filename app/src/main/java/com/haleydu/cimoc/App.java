@@ -25,6 +25,7 @@ import com.haleydu.cimoc.misc.ActivityLifecycle;
 import com.haleydu.cimoc.model.DaoMaster;
 import com.haleydu.cimoc.model.DaoSession;
 import com.haleydu.cimoc.saf.DocumentFile;
+import com.haleydu.cimoc.source.SourceConfig;
 import com.haleydu.cimoc.ui.adapter.GridAdapter;
 import com.haleydu.cimoc.utils.DocumentUtils;
 import com.haleydu.cimoc.utils.StringUtils;
@@ -43,6 +44,11 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import java.io.IOException;
 import androidx.multidex.MultiDexApplication;
 
 /**
@@ -235,6 +241,13 @@ public class App extends MultiDexApplication implements AppGetter, Thread.Uncaug
             mHttpClient = new OkHttpClient().newBuilder()
                     .sslSocketFactory(createSSLSocketFactory())
                     .hostnameVerifier(new TrustAllHostnameVerifier())
+                    .addInterceptor(new Interceptor() {
+                        @Override
+                        public Response intercept(Chain chain) throws IOException {
+                            Request request = SourceConfig.rewriteRequest(chain.request());
+                            return chain.proceed(request);
+                        }
+                    })
                     .followRedirects(true)
                     .followSslRedirects(true)
                     .retryOnConnectionFailure(true)

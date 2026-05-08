@@ -6,6 +6,7 @@ import com.haleydu.cimoc.manager.PreferenceManager;
 import com.haleydu.cimoc.model.Comic;
 import com.haleydu.cimoc.model.MiniComic;
 import com.haleydu.cimoc.rx.RxEvent;
+import com.haleydu.cimoc.source.SourceConfig;
 import com.haleydu.cimoc.ui.view.MainView;
 
 import org.json.JSONException;
@@ -27,7 +28,6 @@ import rx.schedulers.Schedulers;
 public class MainPresenter extends BasePresenter<MainView> {
 
     private ComicManager mComicManager;
-    private static final String SOURCE_URL = "https://raw.githubusercontent.com/Haleydu/update/master/sourceBaseUrl.json";
 
     @Override
     protected void onViewAttach() {
@@ -75,14 +75,19 @@ public class MainPresenter extends BasePresenter<MainView> {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
                         OkHttpClient client = App.getHttpClient();
-                        Request request = new Request.Builder().url(SOURCE_URL).build();
+                        if (client == null) {
+                            subscriber.onError(new Exception());
+                            return;
+                        }
+                        Request request = new Request.Builder().url(SourceConfig.getSourceUrl()).build();
                         Response response = null;
                         try {
                             response = client.newCall(request).execute();
                             if (response.isSuccessful()) {
                                 String json = response.body().string();
-                                subscriber.onNext(json);
+                                subscriber.onNext(SourceConfig.resolveRemoteDomains(json, client));
                                 subscriber.onCompleted();
+                                return;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -98,9 +103,11 @@ public class MainPresenter extends BasePresenter<MainView> {
                         .subscribe(new Action1<String>() {
                             @Override
                             public void call(String json) {
+                                SourceConfig.update(json);
                                 try {
-                                    String HHAAZZ = new JSONObject(json).getString("HHAAZZ");
-                                    String sw = new JSONObject(json).getString("sw");
+                                    JSONObject object = new JSONObject(json);
+                                    String HHAAZZ = object.optString("HHAAZZ", "");
+                                    String sw = object.optString("sw", "");
                                     if (!HHAAZZ.equals(App.getPreferenceManager().getString(PreferenceManager.PREF_HHAAZZ_BASEURL, ""))){
                                         App.getPreferenceManager().putString(PreferenceManager.PREF_HHAAZZ_BASEURL, HHAAZZ);
                                     }

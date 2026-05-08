@@ -126,10 +126,10 @@ public class MiGu extends MangaParser {
                 .addHeader("user-agent", "Mozilla/5.0 (Linux; U; Android 4.0.4; en-gb; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30")
                 .get()//默认就是GET请求，可以不写
                 .build();
-        Call call = okHttpClient.newCall(request);
+        Call call = okHttpClient.newCall(SourceConfig.rewriteRequest(request));
         try {
             Response response = call.execute();
-            return response.body().string();
+            return SourceConfig.normalizeResponse(response.body().string());
         } catch (Exception ex) {
             return "";
         }
