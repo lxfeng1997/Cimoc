@@ -5,6 +5,7 @@ buildscript {
         jcenter()
         mavenCentral()
         google()
+        maven { url 'http://developer.huawei.com/repo/' }
 
     }
     dependencies {
@@ -13,6 +14,7 @@ buildscript {
         // in the individual module build.gradle files
         classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10"
+        classpath 'com.huawei.agconnect:agcp:1.2.1.301'
     }
 }
 
